@@ -1,0 +1,50 @@
+version: '3'
+
+networks:
+  wordpress_network:
+
+services:
+  wordpress:
+    build: ./wordpress
+    ports:
+      - "8080:80"
+    volumes:
+      - ./wordpress/my-theme:/var/www/html/wp-content/themes/my-theme
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DEBUG: "true"  # Habilita el modo de depuración de WordPress para ver los correos enviados
+    depends_on:
+      - db
+    networks:
+      - wordpress_network
+    # command: ["sh", "-c", "wp theme activate my-theme"]
+
+  db:
+    build: ./mysql
+    ports:
+      - "3306:3306"  # Exponer el puerto 3306 de MySQL
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - wordpress_network
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"  # Puerto para SMTP (envío de correos)
+      - "8025:8025"  # Puerto para la interfaz web de MailHog
+    networks:
+      - wordpress_network
+
+volumes:
+  db_data:
+
+
