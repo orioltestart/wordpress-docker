@@ -88,3 +88,29 @@ function deactivate_jquery() {
     wp_deregister_script('jquery');
 }
 add_action('wp_enqueue_scripts', 'deactivate_jquery');
+
+function remove_customize_menu()
+{
+    global $submenu;
+    unset($submenu['themes.php'][6]); // Remueve la opción del menú Personalizar
+}
+add_action('admin_menu', 'remove_customize_menu');
+
+
+function remove_theme_editor_menu()
+{
+    remove_submenu_page('themes.php', 'theme-editor.php'); // Remueve la opción del menú Editor
+}
+add_action('admin_menu', 'remove_theme_editor_menu', 999);
+
+function change_appearance_menu_title()
+{
+    global $menu;
+    foreach ($menu as $key => $item) {
+        if ($item[0] == 'Apariencia') {
+            $menu[$key][0] = 'Temas'; // Cambia el título del menú "Apariencia" por "Temas"
+            break;
+        }
+    }
+}
+add_action('admin_menu', 'change_appearance_menu_title');
