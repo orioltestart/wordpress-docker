@@ -10,6 +10,7 @@ services:
       - "8080:80"
     volumes:
       - ./wordpress/my-theme:/var/www/html/wp-content/themes/my-theme
+      - ./wordpress/.htaccess:/var/www/html/.htaccess
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
